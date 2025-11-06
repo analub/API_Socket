@@ -2,21 +2,21 @@ import cv2
 import os
 import numpy as np
 
-# leitura da imagem
-caminho_imagem = 'faces/image_0001.jpg'
+# leitura da imagem -> cliente
+caminho_imagem = 'faces/image_0003.jpg'
 img = cv2.imread(caminho_imagem)
 
-# codificação para bytes
+# codificação para bytes  -> cliente
 _, img_bytes = cv2.imencode('.jpg', img) 
 img_bytes = bytes(img_bytes)
 tamanho_da_imagem_codificado = len(img_bytes).to_bytes(4, 'big')
 
-# decodificação
+# decodificação -> servidor 
 tam = int.from_bytes(tamanho_da_imagem_codificado, 'big')
 img = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
 
 
-# processamento
+# processamento -> servidor para criar retangulo 
 xml_classificador = os.path.join(os.path.relpath(
     cv2.__file__).replace('__init__.py', ''), 'data\haarcascade_frontalface_default.xml')
 face_cascade = cv2.CascadeClassifier(
