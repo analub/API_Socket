@@ -11,21 +11,22 @@ class Servidor():
         """
         self._host = host
         self._port = port
-        self.__tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #familia de endereço, protocolo de transporte, DCP
 
 
     def start(self):
         """
         Método que inicializa a execução do servidor
         """
-        endpoint = (self._host, self._port)
-        try:
+        endpoint = (self._host, self._port) #variavel local, como se fosse inteiro mas tipo é tupla
+        
+        try:                                #algo que pode dar errado e não se tem controle
             self.__tcp.bind(endpoint)
             self.__tcp.listen(1)
             print("Servidor iniciado em ", self._host, ": ", self._port)
             while True:
-                con, client = self.__tcp.accept()
-                self._service(con, client)
+                con, client = self.__tcp.accept() #Só sai se houver conexão | accept = comand bloqueante (retorna os dados do cliente)
+                self._service(con, client)        #método da classe servidor  
         except Exception as e:
             print("Erro ao inicializar o servidor", e.args)
 
@@ -38,9 +39,9 @@ class Servidor():
         print("Atendendo cliente ", client)
         while True:
             try:
-                msg = con.recv(1024)
-                msg_s = str(msg.decode('ascii'))
-                resp = eval(msg_s)
+                msg = con.recv(1024)                #conjunto de bytes "crus" | 1024 conjunto max a ser lido 
+                msg_s = str(msg.decode('ascii'))    #decodificar msg
+                resp = eval(msg_s)                  #analisa string e devolve resposta 
                 con.send(bytes(str(resp), 'ascii'))
                 print(client, " -> requisição atendida")
             except OSError as e:
